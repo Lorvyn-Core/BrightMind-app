@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BrightMind — Learn & Prepare</title>
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#0f172a"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="BrightMind"/>
+  <link rel="apple-touch-icon" href="icon-192.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #263348;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --purple: #818cf8;
+      --pink: #f472b6;
+      --sky: #38bdf8;
+      --green: #4ade80;
+      --sun: #fbbf24;
+      --waec: #10b981;
+      --neco: #3b82f6;
+      --jamb: #f59e0b;
+      --utme: #ec4899;
+      --correct: #10b981;
+      --wrong: #ef4444;
+      --radius: 16px;
+      --shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+
+    /* HEADER */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; }
+    .logo span { color: var(--purple); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .stars-pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 50px; padding: 5px 12px;
+      font-size: 0.8rem; font-weight: 700; color: var(--sun);
+    }
+    .streak-pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 50px; padding: 5px 12px;
+      font-size: 0.8rem; font-weight: 700; color: var(--jamb);
+    }
+    #install-btn {
+      display: none; align-items: center; gap: 6px;
+      background: var(--purple); border: none; border-radius: 50px;
+      padding: 7px 14px; color: #fff;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.8rem; cursor: pointer;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 10px 8px 14px;
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 0.65rem; font-weight: 600; padding: 6px 10px;
+      border-radius: 12px; transition: all 0.2s; flex: 1;
+    }
+    .nav-btn .nav-icon { font-size: 1.2rem; }
+    .nav-btn.active { color: var(--purple); background: rgba(129,140,248,0.1); }
+    .nav-btn.active.stories { color: var(--pink); background: rgba(244,114,182,0.1); }
+    .nav-btn.active.phonics { color: var(--sky); background: rgba(56,189,248,0.1); }
+    .nav-btn.active.math { color: var(--green); background: rgba(74,222,128,0.1); }
+    .nav-btn.active.gk { color: var(--sun); background: rgba(251,191,36,0.1); }
+    .nav-btn.active.exams { color: var(--waec); background: rgba(16,185,129,0.1); }
+
+    /* SECTIONS */
+    .section { display: none; padding: 20px; max-width: 700px; margin: 0 auto; }
+    .section.active { display: block; }
+
+    /* CARDS / COMMON */
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 4px;
+    }
+    .page-sub { color: var(--muted); font-size: 0.875rem; margin-bottom: 20px; }
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--muted); margin-bottom: 12px;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 50px; padding: 7px 16px;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      margin-bottom: 18px; transition: all 0.2s;
+    }
+    .back-btn:hover { border-color: var(--text); color: var(--text); }
+    .btn-primary {
+      padding: 12px 26px; background: linear-gradient(135deg,#818cf8,#6366f1);
+      border: none; border-radius: 50px; color: #fff;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .btn-primary:hover { transform: scale(1.04); }
+
+    /* ── HOME ── */
+    .home-banner {
+      background: linear-gradient(135deg,#1e1b4b,#0f172a);
+      border: 1px solid #3730a3; border-radius: var(--radius);
+      padding: 26px 22px; margin-bottom: 24px; position: relative; overflow: hidden;
+    }
+    .home-banner::after {
+      content: '✨'; position: absolute; right: 16px; top: 50%;
+      transform: translateY(-50%); font-size: 5rem; opacity: 0.15;
+    }
+    .home-banner h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+    .home-banner p { color: var(--muted); font-size: 0.875rem; line-height: 1.5; }
+
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .home-card {
+      border-radius: var(--radius); padding: 20px 16px;
+      border: none; cursor: pointer; transition: all 0.2s;
+      text-align: left; display: flex; flex-direction: column; gap: 6px;
+    }
+    .home-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .home-card .hc-icon { font-size: 2rem; }
+    .home-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: #fff; }
+    .home-card p { font-size: 0.75rem; color: rgba(255,255,255,0.75); font-weight: 500; }
+    .hc-stories { background: linear-gradient(135deg,#9d174d,#ec4899); }
+    .hc-phonics  { background: linear-gradient(135deg,#0369a1,#38bdf8); }
+    .hc-math     { background: linear-gradient(135deg,#15803d,#4ade80); }
+    .hc-gk       { background: linear-gradient(135deg,#b45309,#fbbf24); }
+    .hc-exams    { background: linear-gradient(135deg,#065f46,#10b981); grid-column: span 2; flex-direction: row; align-items: center; gap: 14px; }
+
+    /* ── STORIES ── */
+    .story-list { display: flex; flex-direction: column; gap: 10px; }
+    .story-row {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 18px;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer; transition: all 0.2s;
+      border-left: 3px solid var(--pink);
+    }
+    .story-row:hover { background: var(--surface2); transform: translateX(3px); }
+    .story-emoji { font-size: 1.8rem; flex-shrink: 0; }
+    .story-info h3 { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+    .story-info p { font-size: 0.78rem; color: var(--muted); }
+    .story-reader { display: none; }
+    .story-reader.active { display: block; }
+    .story-title-bar {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem; font-weight: 700; color: var(--pink);
+      margin-bottom: 18px;
+    }
+    .story-body { line-height: 1.9; font-size: 1rem; font-weight: 500; color: #cbd5e1; }
+    .story-body p { margin-bottom: 14px; }
+
+    /* ── PHONICS ── */
+    .phonics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+    .letter-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 14px 8px; text-align: center;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .letter-card:hover, .letter-card.active {
+      border-color: var(--sky); background: var(--surface2);
+      transform: scale(1.05);
+    }
+    .letter-big { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--sky); }
+    .letter-word { font-size: 0.7rem; font-weight: 600; color: var(--muted); margin-top: 3px; }
+    .phonics-detail {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; text-align: center;
+      display: none;
+    }
+    .phonics-detail.active { display: block; }
+    .ph-big { font-family: 'Space Grotesk', sans-serif; font-size: 4.5rem; font-weight: 700; color: var(--sky); line-height: 1; }
+    .ph-sound { font-size: 1rem; font-weight: 700; color: var(--muted); margin: 8px 0 16px; }
+    .ph-words { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+    .ph-pill {
+      background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3);
+      color: var(--sky); padding: 7px 16px; border-radius: 50px;
+      font-weight: 700; font-size: 0.9rem;
+    }
+
+    /* ── MATH ── */
+    .level-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+    .level-btn {
+      padding: 7px 18px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.85rem;
+    }
+    .level-btn.active { background: var(--green); border-color: var(--green); color: #0f172a; }
+    .math-scorebar { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 14px; }
+    .math-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 22px; text-align: center; }
+    .math-q { font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 700; margin-bottom: 22px; }
+    .math-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .math-opt {
+      padding: 16px; border-radius: 14px;
+      border: 1.5px solid var(--border); background: var(--surface2);
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700;
+      color: var(--text); cursor: pointer; transition: all 0.2s;
+    }
+    .math-opt:hover { border-color: var(--green); }
+    .math-opt.correct { background: rgba(74,222,128,0.15); border-color: var(--green); color: var(--green); }
+    .math-opt.wrong   { background: rgba(239,68,68,0.15);  border-color: var(--wrong);  color: var(--wrong); }
+    .math-fb { margin-top: 16px; font-weight: 700; font-size: 1rem; min-height: 24px; }
+    .next-q-btn {
+      margin-top: 14px; padding: 11px 26px;
+      background: linear-gradient(135deg,var(--green),#16a34a);
+      border: none; border-radius: 50px; color: #0f172a;
+      font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.9rem;
+      cursor: pointer; display: none;
+    }
+
+    /* ── GK QUIZ ── */
+    .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .topic-btn {
+      padding: 18px 14px; border-radius: var(--radius); border: none;
+      cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.9rem; color: #fff; transition: all 0.2s; text-align: center;
+    }
+    .topic-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .topic-btn .t-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .tb-animals { background: linear-gradient(135deg,#9d174d,#ec4899); }
+    .tb-science  { background: linear-gradient(135deg,#0369a1,#38bdf8); }
+    .tb-history  { background: linear-gradient(135deg,#b45309,#fbbf24); }
+    .tb-world    { background: linear-gradient(135deg,#5b21b6,#a78bfa); }
+    .gk-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: none; }
+    .gk-box.active { display: block; }
+    .gk-progress-row { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 10px; }
+    .prog-bar { width: 100%; height: 4px; background: var(--surface2); border-radius: 50px; margin-bottom: 20px; overflow: hidden; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg,var(--sun),var(--jamb)); border-radius: 50px; transition: width 0.4s; }
+    .gk-q { font-weight: 700; font-size: 1.05rem; line-height: 1.6; margin-bottom: 18px; }
+    .gk-opts { display: flex; flex-direction: column; gap: 9px; }
+    .gk-opt {
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 13px 16px;
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text);
+      text-align: left;
+    }
+    .gk-opt:hover { border-color: var(--sun); }
+    .gk-opt.correct { border-color: var(--correct); background: rgba(16,185,129,0.1); color: var(--correct); }
+    .gk-opt.wrong   { border-color: var(--wrong);   background: rgba(239,68,68,0.1);   color: var(--wrong); }
+    .opt-letter {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      background: var(--border); display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800;
+    }
+    .gk-opt.correct .opt-letter { background: var(--correct); color: #fff; }
+    .gk-opt.wrong   .opt-letter { background: var(--wrong);   color: #fff; }
+    .gk-result { text-align: center; padding: 16px 0; display: none; }
+    .gk-result.active { display: block; }
+    .r-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+    .r-score-big { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; }
+    .r-msg { color: var(--muted); font-size: 0.875rem; font-weight: 600; margin: 6px 0 18px; }
+    .retry-btn {
+      padding: 11px 26px; background: linear-gradient(135deg,var(--sun),var(--jamb));
+      border: none; border-radius: 50px; color: #0f172a;
+      font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.9rem; cursor: pointer;
+    }
+
+    /* ── EXAM PREP ── */
+    .exam-hero {
+      background: linear-gradient(135deg,#064e3b,#0f172a);
+      border: 1px solid #065f46; border-radius: var(--radius);
+      padding: 26px 22px; margin-bottom: 24px; position: relative; overflow: hidden;
+    }
+    .exam-hero::after { content: 'NG'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: 'Space Grotesk', sans-serif; font-size: 5rem; font-weight: 700; color: #065f46; opacity: 0.5; letter-spacing: -4px; }
+    .exam-hero h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; }
+    .exam-hero p { color: var(--muted); font-size: 0.875rem; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 22px; }
+    .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; text-align: center; }
+    .stat-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--waec); }
+    .stat-lbl { font-size: 0.7rem; color: var(--muted); margin-top: 3px; font-weight: 500; }
+
+    .exam-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .exam-type-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 16px;
+      cursor: pointer; transition: all 0.2s; text-align: left;
+    }
+    .exam-type-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .et-dot { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 12px; box-shadow: 0 0 10px currentColor; }
+    .et-waec .et-dot { background: var(--waec); color: var(--waec); }
+    .et-neco .et-dot { background: var(--neco); color: var(--neco); }
+    .et-jamb .et-dot { background: var(--jamb); color: var(--jamb); }
+    .et-utme .et-dot { background: var(--utme); color: var(--utme); }
+    .et-waec:hover { border-color: var(--waec); }
+    .et-neco:hover { border-color: var(--neco); }
+    .et-jamb:hover { border-color: var(--jamb); }
+    .et-utme:hover { border-color: var(--utme); }
+    .exam-type-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .exam-type-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+    .et-tag { display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 50px; font-size: 0.68rem; font-weight: 700; color: #fff; opacity: 0.9; }
+    .et-waec .et-tag { background: var(--waec); }
+    .et-neco .et-tag { background: var(--neco); }
+    .et-jamb .et-tag { background: var(--jamb); }
+    .et-utme .et-tag { background: var(--utme); }
+
+    .subject-list-exam { display: flex; flex-direction: column; gap: 9px; }
+    .subject-row-exam {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 13px; padding: 15px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .subject-row-exam:hover { background: var(--surface2); border-color: var(--purple); }
+    .sre-left { display: flex; align-items: center; gap: 12px; }
+    .sre-icon { font-size: 1.3rem; }
+    .sre-name { font-weight: 700; font-size: 0.92rem; }
+    .sre-count { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    .mode-list { display: flex; flex-direction: column; gap: 10px; }
+    .mode-row {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .mode-row:hover { border-color: var(--waec); transform: translateX(4px); }
+    .mode-row-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .mode-row-info h4 { font-weight: 700; font-size: 0.92rem; margin-bottom: 3px; }
+    .mode-row-info p { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+    .exam-qbox { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+    .eq-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .eq-meta { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+    .timer-pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 50px; padding: 5px 14px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700;
+    }
+    .timer-pill.urgent { color: var(--wrong); border-color: var(--wrong); }
+    .eq-qnum { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+    .eq-qtext { font-size: 1.02rem; font-weight: 600; line-height: 1.65; margin-bottom: 20px; }
+    .eq-opts { display: flex; flex-direction: column; gap: 9px; }
+    .eq-opt {
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 13px 16px;
+      display: flex; align-items: flex-start; gap: 12px;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text);
+      text-align: left;
+    }
+    .eq-opt:hover:not(:disabled) { border-color: var(--waec); }
+    .eq-opt:disabled { cursor: default; }
+    .eq-opt.correct { border-color: var(--correct); background: rgba(16,185,129,0.1); color: var(--correct); }
+    .eq-opt.wrong   { border-color: var(--wrong);   background: rgba(239,68,68,0.1);   color: var(--wrong); }
+    .eq-opt .opt-letter { background: var(--border); }
+    .eq-opt.correct .opt-letter { background: var(--correct); color: #fff; }
+    .eq-opt.wrong   .opt-letter { background: var(--wrong);   color: #fff; }
+    .exp-box {
+      margin-top: 14px; background: var(--surface2);
+      border: 1px solid var(--border); border-left: 3px solid var(--waec);
+      border-radius: 12px; padding: 14px 16px;
+      font-size: 0.85rem; line-height: 1.6; color: #cbd5e1; display: none;
+    }
+    .exp-box.show { display: block; }
+    .exp-box strong { color: var(--waec); }
+    .eq-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-skip {
+      padding: 10px 18px; background: none; border: 1px solid var(--border);
+      border-radius: 50px; color: var(--muted);
+      font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.88rem; cursor: pointer;
+    }
+    .btn-next-q {
+      padding: 10px 22px; background: linear-gradient(135deg,var(--waec),#059669);
+      border: none; border-radius: 50px; color: #fff;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.88rem;
+      cursor: pointer; display: none;
+    }
+
+    /* RESULTS */
+    .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 22px; text-align: center; margin-bottom: 18px; }
+    .result-pct { font-family: 'Space Grotesk', sans-serif; font-size: 3.8rem; font-weight: 700; margin-bottom: 6px; }
+    .result-lbl { font-size: 0.85rem; color: var(--muted); font-weight: 600; margin-bottom: 20px; }
+    .result-breakdown { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 22px; }
+    .rb-box { background: var(--surface2); border-radius: 12px; padding: 14px 8px; text-align: center; }
+    .rb-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; }
+    .rb-lbl { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
+    .action-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-sec {
+      flex: 1; min-width: 120px; padding: 11px 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 50px; color: var(--text);
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .btn-sec:hover { border-color: var(--waec); color: var(--waec); }
+    .review-list { display: flex; flex-direction: column; gap: 9px; }
+    .review-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; font-size: 0.84rem; line-height: 1.5;
+    }
+    .review-item.rc { border-left: 3px solid var(--correct); }
+    .review-item.rw { border-left: 3px solid var(--wrong); }
+    .rev-q { font-weight: 700; margin-bottom: 5px; }
+    .rev-a { color: var(--muted); }
+    .c-text { color: var(--correct); font-weight: 700; }
+    .w-text { color: var(--wrong); font-weight: 700; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 10px 22px; border-radius: 50px;
+      font-weight: 700; font-size: 0.9rem; z-index: 999;
+      transition: transform 0.3s; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* EXAM SCREENS WITHIN SECTION */
+    .escreen { display: none; }
+    .escreen.active { display: block; }
+
+    @media (max-width: 380px) {
+      .phonics-grid { grid-template-columns: repeat(3,1fr); }
+      .math-q { font-size: 2rem; }
+      .exam-type-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Bright<span>Mind</span></div>
+  <div class="header-right">
+    <div class="stars-pill">⭐ <span id="star-count">0</span></div>
+    <div class="streak-pill">🔥 <span id="streak-val">0</span></div>
+    <button id="install-btn">📲 Install</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="section active" id="section-home">
+    <div class="home-banner">
+      <h1>Welcome to BrightMind 🚀</h1>
+      <p>Stories, phonics, maths and quizzes for kids — plus full WAEC, NECO, JAMB & Post UTME exam prep.</p>
+    </div>
+    <div class="section-label">What do you want to do?</div>
+    <div class="home-grid">
+      <button class="home-card hc-stories" onclick="goTo('stories')">
+        <div class="hc-icon">📖</div><h3>Stories</h3><p>20 Nigerian stories</p>
+      </button>
+      <button class="home-card hc-phonics" onclick="goTo('phonics')">
+        <div class="hc-icon">🔤</div><h3>Phonics</h3><p>A–Z sounds & words</p>
+      </button>
+      <button class="home-card hc-math" onclick="goTo('math')">
+        <div class="hc-icon">🔢</div><h3>Maths</h3><p>3 difficulty levels</p>
+      </button>
+      <button class="home-card hc-gk" onclick="goTo('gk')">
+        <div class="hc-icon">🧠</div><h3>Quiz</h3><p>General knowledge</p>
+      </button>
+      <button class="home-card hc-exams" onclick="goTo('exams')">
+        <div class="hc-icon">🎓</div>
+        <div><h3>Exam Prep Centre</h3><p>WAEC · NECO · JAMB · Post UTME</p></div>
+      </button>
+    </div>
+  </section>
+
+  <!-- STORIES -->
+  <section class="section" id="section-stories">
+    <div class="page-title">📖 Stories</div>
+    <div class="page-sub">20 Nigerian stories — tap to read</div>
+    <div id="story-list" class="story-list"></div>
+    <div id="story-reader" class="story-reader">
+      <button class="back-btn" onclick="closeStory()">← Back to Stories</button>
+      <div class="story-title-bar" id="story-title"></div>
+      <div class="story-body" id="story-body"></div>
+    </div>
+  </section>
+
+  <!-- PHONICS -->
+  <section class="section" id="section-phonics">
+    <div class="page-title">🔤 Phonics A–Z</div>
+    <div class="page-sub">Tap a letter to learn its sound and words</div>
+    <div class="phonics-grid" id="phonics-grid"></div>
+    <div class="phonics-detail" id="phonics-detail">
+      <div class="ph-big" id="ph-letter"></div>
+      <div class="ph-sound" id="ph-sound"></div>
+      <div class="ph-words" id="ph-words"></div>
+    </div>
+  </section>
+
+  <!-- MATH -->
+  <section class="section" id="section-math">
+    <div class="page-title">🔢 Maths Practice</div>
+    <div class="page-sub">Choose your level and answer 10 questions</div>
+    <div class="level-row">
+      <button class="level-btn active" onclick="setMathLevel('easy',this)">Easy ➕➖</button>
+      <button class="level-btn" onclick="setMathLevel('medium',this)">Medium ✖️➗</button>
+      <button class="level-btn" onclick="setMathLevel('hard',this)">Hard 🧩</button>
+    </div>
+    <div class="math-scorebar">
+      <span>Question <span id="math-qnum">1</span>/10</span>
+      <span>Score: <span id="math-score">0</span></span>
+    </div>
+    <div class="math-card">
+      <div class="math-q" id="math-q"></div>
+      <div class="math-opts" id="math-opts"></div>
+      <div class="math-fb" id="math-fb"></div>
+      <button class="next-q-btn" id="math-next" onclick="nextMath()">Next →</button>
+    </div>
+  </section>
+
+  <!-- GK QUIZ -->
+  <section class="section" id="section-gk">
+    <div class="page-title">🧠 General Knowledge</div>
+    <div class="page-sub">Pick a topic and test yourself</div>
+    <div class="topic-grid" id="topic-grid">
+      <button class="topic-btn tb-animals" onclick="startGK('animals')"><span class="t-icon">🐾</span>Animals</button>
+      <button class="topic-btn tb-science"  onclick="startGK('science')"><span class="t-icon">🔬</span>Science</button>
+      <button class="topic-btn tb-history"  onclick="startGK('history')"><span class="t-icon">🏛️</span>History</button>
+      <button class="topic-btn tb-world"    onclick="startGK('world')"><span class="t-icon">🌍</span>World</button>
+    </div>
+    <div class="gk-box" id="gk-box">
+      <div class="gk-progress-row">
+        <span id="gk-topic-lbl"></span>
+        <span>Q <span id="gk-qnum">1</span>/8</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="gk-prog"></div></div>
+      <div class="gk-q" id="gk-q"></div>
+      <div class="gk-opts" id="gk-opts"></div>
+      <div class="gk-result" id="gk-result">
+        <div class="r-emoji" id="gk-emoji"></div>
+        <div class="r-score-big" id="gk-score"></div>
+        <div class="r-msg" id="gk-msg"></div>
+        <button class="retry-btn" onclick="resetGK()">Try Another Topic 🎯</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAM PREP -->
+  <section class="section" id="section-exams">
+    <div class="exam-hero">
+      <h2>Exam Prep Centre 🎓</h2>
+      <p>WAEC · NECO · JAMB · Post UTME — timed mocks, practice mode and full explanations.</p>
+    </div>
+
+    <!-- ESCREEN 1: Home -->
+    <div class="escreen active" id="es-home">
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Questions done</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-avg" style="color:var(--neco)">—</div><div class="stat-lbl">Avg score</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-sess" style="color:var(--jamb)">0</div><div class="stat-lbl">Sessions</div></div>
+      </div>
+      <div class="section-label">Choose Your Exam</div>
+      <div class="exam-type-grid">
+        <div class="exam-type-card et-waec" onclick="pickExam('waec')">
+          <div class="et-dot"></div><h3>WAEC</h3>
+          <p>West African Senior School Certificate</p>
+          <span class="et-tag">SS1–SS3</span>
+        </div>
+        <div class="exam-type-card et-neco" onclick="pickExam('neco')">
+          <div class="et-dot"></div><h3>NECO</h3>
+          <p>National Examinations Council</p>
+          <span class="et-tag">SS1–SS3</span>
+        </div>
+        <div class="exam-type-card et-jamb" onclick="pickExam('jamb')">
+          <div class="et-dot"></div><h3>JAMB UTME</h3>
+          <p>Joint Admissions & Matriculation Board</p>
+          <span class="et-tag">University Entry</span>
+        </div>
+        <div class="exam-type-card et-utme" onclick="pickExam('utme')">
+          <div class="et-dot"></div><h3>Post UTME</h3>
+          <p>University-specific screening tests</p>
+          <span class="et-tag">Various</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCREEN 2: Subject -->
+    <div class="escreen" id="es-subject">
+      <button class="back-btn" onclick="showES('es-home')">← Back</button>
+      <div class="page-title" id="es-exam-title">Choose Subject</div>
+      <div class="page-sub">Select the subject you want to practise</div>
+      <div class="subject-list-exam" id="es-subject-list"></div>
+    </div>
+
+    <!-- ESCREEN 3: Mode -->
+    <div class="escreen" id="es-mode">
+      <button class="back-btn" onclick="showES('es-subject')">← Back</button>
+      <div class="page-title" id="es-subj-title">Choose Mode</div>
+      <div class="page-sub">How do you want to study?</div>
+      <div class="mode-list">
+        <div class="mode-row" onclick="startExamSession('practice')">
+          <div class="mode-row-icon">📝</div>
+          <div class="mode-row-info"><h4>Practice Mode</h4><p>No timer. See explanation immediately after each answer.</p></div>
+        </div>
+        <div class="mode-row" onclick="startExamSession('timed')">
+          <div class="mode-row-icon">⏱️</div>
+          <div class="mode-row-info"><h4>Timed Mock Exam</h4><p>40 seconds per question. Exam conditions.</p></div>
+        </div>
+        <div class="mode-row" onclick="startExamSession('marathon')">
+          <div class="mode-row-icon">🏃</div>
+          <div class="mode-row-info"><h4>Marathon Mode</h4><p>Keep going until you get one wrong. Beat your record!</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCREEN 4: Questions -->
+    <div class="escreen" id="es-quiz">
+      <div class="exam-qbox">
+        <div class="eq-header">
+          <div class="eq-meta" id="eq-meta"></div>
+          <div class="timer-pill" id="eq-timer" style="display:none">0:40</div>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="eq-prog"></div></div>
+        <div class="eq-qnum" id="eq-qnum"></div>
+        <div class="eq-qtext" id="eq-qtext"></div>
+        <div class="eq-opts" id="eq-opts"></div>
+        <div class="exp-box" id="eq-exp"></div>
+        <div class="eq-actions">
+          <button class="btn-skip" id="eq-skip" onclick="examSkip()">Skip →</button>
+          <button class="btn-next-q" id="eq-next" onclick="examNext()">Next Question →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESCREEN 5: Results -->
+    <div class="escreen" id="es-results">
+      <div class="result-card">
+        <div class="result-pct" id="res-pct"></div>
+        <div class="result-lbl" id="res-lbl"></div>
+        <div class="result-breakdown">
+          <div class="rb-box"><div class="rb-val" style="color:var(--correct)" id="res-correct">0</div><div class="rb-lbl">Correct</div></div>
+          <div class="rb-box"><div class="rb-val" style="color:var(--wrong)"   id="res-wrong">0</div><div class="rb-lbl">Wrong</div></div>
+          <div class="rb-box"><div class="rb-val" style="color:var(--jamb)"    id="res-score">0%</div><div class="rb-lbl">Score</div></div>
+        </div>
+        <div class="action-row">
+          <button class="btn-sec" onclick="retrySession()">🔁 Retry</button>
+          <button class="btn-sec" onclick="showES('es-subject')">📚 New Subject</button>
+          <button class="btn-sec" onclick="showES('es-home')">🏠 Home</button>
+        </div>
+      </div>
+      <div class="section-label">Review Your Answers</div>
+      <div class="review-list" id="res-review"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active"    onclick="goTo('home')"    id="nav-home">    <span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-btn stories"   onclick="goTo('stories')" id="nav-stories"> <span class="nav-icon">📖</span>Stories</button>
+  <button class="nav-btn phonics"   onclick="goTo('phonics')" id="nav-phonics"> <span class="nav-icon">🔤</span>Phonics</button>
+  <button class="nav-btn math"      onclick="goTo('math')"    id="nav-math">    <span class="nav-icon">🔢</span>Maths</button>
+  <button class="nav-btn gk"        onclick="goTo('gk')"      id="nav-gk">      <span class="nav-icon">🧠</span>Quiz</button>
+  <button class="nav-btn exams"     onclick="goTo('exams')"   id="nav-exams">   <span class="nav-icon">🎓</span>Exams</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function goTo(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ══════════════════════════════════════
+// STARS & STREAK
+// ══════════════════════════════════════
+let stars = parseInt(localStorage.getItem('bm_stars') || '0');
+document.getElementById('star-count').textContent = stars;
+function addStars(n) {
+  stars += n; localStorage.setItem('bm_stars', stars);
+  document.getElementById('star-count').textContent = stars;
+  showToast('⭐ +' + n + ' star' + (n > 1 ? 's' : '') + '!');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+let lastDate = localStorage.getItem('bm_lastdate') || '';
+let streak = parseInt(localStorage.getItem('bm_streak') || '0');
+const today = new Date().toDateString();
+if (lastDate !== today) {
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  streak = lastDate === yesterday.toDateString() ? streak + 1 : 1;
+  localStorage.setItem('bm_streak', streak);
+  localStorage.setItem('bm_lastdate', today);
+}
+document.getElementById('streak-val').textContent = streak;
+
+// ══════════════════════════════════════
+// STORIES
+// ══════════════════════════════════════
+const stories = [
+  {title:"Mama's Jollof Secret",emoji:"🥘",sub:"The tastiest pot in all of Lagos",body:`<p>Everyone in Surulere agreed that Mama Tunde made the best jollof rice in all of Lagos. The smell of her pot would drift through the entire street, and neighbours would find excuses to knock on her door around dinnertime.</p><p>Her son Tunde was eleven years old and desperate to learn the secret. Every time he asked, Mama would laugh and say, "Omo, the secret is not in the ingredients. It is in the love."</p><p>Tunde did not believe her. He was sure she was hiding something — a special spice from the Balogun market, perhaps, or a mysterious step she did when no one was watching.</p><p>One Saturday, while Mama was at the salon, Tunde decided to cook jollof rice himself. He measured everything perfectly. Tomatoes, tatashe, onions, seasoning cubes, bay leaves — exactly as he had watched many times.</p><p>But when the rice was done, it tasted... flat. Nothing like Mama's.</p><p>When Mama came home and tasted it, she did not laugh. She sat down beside him and said quietly, "You cooked this for yourself, to prove something. I cook mine thinking about how happy it will make everyone at the table. That is the difference."</p><p>Tunde sat quietly for a long time. Then he stood up, washed the pot, and started again — this time thinking about his little sister's smile when she ate. 🥘</p>`},
+  {title:"The Eagle of Aso Rock",emoji:"🦅",sub:"A boy who dared to dream big in Abuja",body:`<p>Eleven-year-old Dayo grew up in Garki, Abuja, within sight of Aso Rock — the great granite mountain that stood behind the seat of government like a silent guardian.</p><p>Every morning before school, he would look up at the rock and wonder what it would feel like to stand at the top. People said it was too steep, too dangerous for a child.</p><p>"Eagles do not ask for permission to fly," his father told him one evening, pointing at a large eagle circling slowly above the rock in the golden light. "They simply spread their wings."</p><p>Dayo began to train. Every weekend, he climbed the smaller hills around Abuja. His legs ached. His hands were rough. But he did not stop.</p><p>On his twelfth birthday, with his father beside him, Dayo stood at the highest point he was allowed to reach on Aso Rock. Abuja stretched out below him like a map — the National Assembly gleaming, the roads threading through the trees, the city waking up in the morning light.</p><p>He understood something then that no classroom had ever taught him: that Nigeria was enormous and beautiful, and that it belonged to him just as much as it belonged to anyone else. 🦅</p>`},
+  {title:"The Iroko Tree's Wisdom",emoji:"🌳",sub:"An ancient tree with a powerful lesson",body:`<p>In a village near Abeokuta, there stood an iroko tree so old that the village elders said it had been there before their grandparents' grandparents were born. Its roots spread across the earth like great fingers, and its branches shaded half the village square.</p><p>Nine-year-old Funke did not understand why everyone respected the tree so much. "It is just a tree," she told her grandmother one afternoon.</p><p>Her grandmother smiled and said nothing. Instead, she pointed to a tiny seedling growing near the base of the iroko. "How long do you think it will take for that to become like this one?"</p><p>Funke shrugged. "Maybe... a hundred years?"</p><p>"More," said her grandmother. "The iroko does not grow fast. It grows strong. It does not bend easily in the storm. And because it is patient, it becomes the tree that every other tree leans on."</p><p>Funke looked up at the great canopy above her. A family of weaver birds had built a nest in the highest branch. A lizard sunned itself on one of the roots. The tree was not just a tree — it was a home for dozens of living things.</p><p>"Be like the iroko," her grandmother said softly. "Grow slowly. Grow strong. And make sure that when you are big, others can find shade in you." 🌳</p>`},
+  {title:"The Egungun's Dance",emoji:"🎭",sub:"A festival night in Ibadan to remember",body:`<p>Every year, the Egungun festival came to Ibadan like a burst of colour and sound. Masked figures dressed in layers of bright cloth moved through the streets, representing the spirits of ancestors come to visit the living.</p><p>Ten-year-old Rotimi both loved and feared the festival. The masquerades were tall and powerful. Their voices seemed to come from another world. His older cousins always ran away laughing, but Rotimi stood his ground, even when his knees shook.</p><p>"Why do you not run?" his cousin Biodun asked.</p><p>"Because Baba said our ancestors come to bless us, not to harm us," Rotimi answered, though his voice was not entirely steady.</p><p>That evening, his grandfather called him aside. "I heard what you said today. You are right. The Egungun reminds us that we are not alone. Every person who came before us — they are still with us."</p><p>He placed a hand on Rotimi's head. "And one day, you too will be an ancestor. What stories will you leave behind for your grandchildren?" 🎭</p>`},
+  {title:"Chidi and the River Crocodile",emoji:"🐊",sub:"A brave boy from the Niger Delta",body:`<p>In a small fishing village in the Niger Delta, the river was everything. It gave the people fish to eat, water to drink, and a road to travel. But it also held dangers — the greatest being Old Kelechi, a massive crocodile that the villagers said was older than the village itself.</p><p>One afternoon, Chidi's little sister Adaeze fell into the river near the deep bend where Old Kelechi was known to rest. Without thinking, Chidi jumped in after her.</p><p>The current was strong. Chidi grabbed Adaeze and kicked toward the bank. Then he felt it — something large moving beneath them in the dark water.</p><p>He held his breath and kept swimming, pulling Adaeze with every ounce of strength he had. When they finally reached the bank, gasping and shaking, the village women who had seen everything were already crying out.</p><p>But nothing had happened. The dark shape in the water had simply turned and glided away into the deep.</p><p>An old fisherman who had watched from his boat said quietly, "Old Kelechi knows a brave heart when he sees one." 🐊</p>`},
+  {title:"The Girl Who Read Everything",emoji:"📚",sub:"Amina's love of books changed her village",body:`<p>In a small town in Kano State, there was a girl named Amina who read everything she could find. She read the backs of medicine bottles, old newspapers used to wrap suya, the labels on bags of rice from the market. When her uncle brought her a proper book — a battered copy of a story about a girl who became a doctor — she read it four times.</p><p>"What is the use of all this reading?" her playmates teased. "You are not even in secondary school yet."</p><p>Amina did not argue. She just kept reading.</p><p>When a disease began spreading through their community and people did not understand how it was transmitted, Amina remembered something she had read. She went to her teacher, who went to the local health officer. Because of what Amina had read and shared, the community learned how to protect themselves quickly.</p><p>The health officer visited the school to say thank you. "How did you know all this?" she asked Amina.</p><p>"I read it," Amina said simply. The health officer reached into her bag and brought out three new books. "Keep reading." 📚</p>`},
+  {title:"Super Eagles Dream",emoji:"⚽",sub:"From a dusty Oshodi pitch to Wembley",body:`<p>Segun was eleven years old and his football was a bundle of plastic bags tied together with rope, kicked on a sandy pitch behind the market in Oshodi. But when he played, he forgot about the noise and the traffic and the heat. In his mind, he was wearing the green and white of Nigeria, running out at a full stadium.</p><p>His mother sold akara in the morning and worked as a cleaner in the afternoon. There was no money for football boots or registration fees. But she never told Segun to stop playing.</p><p>"Your talent is not mine to give you or take away," she said. "It belongs to God and to you. Use it well."</p><p>One Saturday, a scout from a Lagos academy came to Oshodi looking for talent. He watched Segun play for twenty minutes without saying a word. Then he crouched down to Segun's level. "Can your parents come and speak with me?"</p><p>Segun's heart felt like it might break free from his chest. He ran home so fast he forgot his plastic-bag ball on the pitch. ⚽</p>`},
+  {title:"The Market Queen",emoji:"🌺",sub:"How Ngozi saved her mother's Onitsha stall",body:`<p>Ngozi's mother ran a fabric stall in Onitsha Main Market — one of the largest markets in all of West Africa. But when Mama fell ill the week before Christmas, the busiest trading season of the year, everything was at risk.</p><p>"I will manage the stall," ten-year-old Ngozi announced at breakfast. Everyone laughed except her father, who nodded slowly. "I will be nearby," he said. "But the stall is yours."</p><p>Ngozi had watched her mother for years. She knew how to display the fabric so the colours caught the light. She knew which customers liked to bargain and which preferred a firm first price. She knew to offer cold water to anyone who looked tired from walking.</p><p>By the end of the first day, she had made more sales than her mother's average. By the end of the week, traders from neighbouring stalls were asking her for advice.</p><p>When Mama recovered and returned to the market, she stood at the entrance of the stall and simply stared. "Ngozi," she said finally, "I think I have been teaching you all these years without knowing it." 🌺</p>`},
+  {title:"The Talking Drum",emoji:"🥁",sub:"A drum that carried messages across kingdoms",body:`<p>Long ago in the ancient Oyo Empire, messages travelled not by paper or phone, but by the dundun — the talking drum. Skilled drummers could make the drum speak in tones that mirrored the Yoruba language, sending news across many miles in minutes.</p><p>Young Akin was the son of the royal drummer. He had been learning the drum since he could hold the sticks, but he could not yet make it truly talk. The sounds he made were noise, not language.</p><p>"You are rushing," his father told him one evening. "You want the drum to obey you. But first, you must listen to it."</p><p>Akin did not understand. But he tried. He sat with the drum in the quiet evening and simply tapped it softly, listening to how each spot produced a different tone.</p><p>And slowly — very slowly — he began to hear the drum as a voice waiting to speak, not a tool waiting to be used. By the time Akin grew up, they said his talking drum could carry a message clearer than any human voice. 🥁</p>`},
+  {title:"Moonlight Tales in the Compound",emoji:"🌙",sub:"Grandma's stories under the stars",body:`<p>Before DSTV, before smartphones, before even electricity came to many parts of Nigeria, evenings in the compound belonged to Grandma and her stories.</p><p>When the moon was full and bright enough to read by, children from three different families would gather on the mat in front of Grandma Efua's door. They came with their backs still warm from the day's sun and their eyes wide with anticipation.</p><p>And then the stories would begin — stories of why the tortoise has a cracked shell, of how the mosquito lost its voice, of the clever woman who outwitted a river spirit to save her village.</p><p>Eleven-year-old Kelechi noticed something one night. Every story had the same shape: someone faced a problem, used their wisdom rather than their fists, and made things better for everyone — not just themselves.</p><p>He mentioned this to Grandma after the other children had gone home. She looked at him with shining eyes. "You have found the bone inside the story. That is what our people have always taught — the cleverest answer is almost never the loudest one." 🌙</p>`},
+  {title:"The Tortoise and the Feast",emoji:"🐢",sub:"A classic Yoruba trickster tale",body:`<p>Long, long ago, the animals of the sky were having a great feast in the clouds. All the birds were invited. Ijapa the tortoise was desperate to attend — but he had no wings.</p><p>"Let me borrow a feather from each of you," he said to the birds, "just one each, and I will be able to fly up with you." The birds felt sorry for him and agreed.</p><p>At the feast, Ijapa announced, "My name for this journey is 'All of You.' So when our hosts say 'This food is for all of you,' they mean it is for me!" And so Ijapa ate nearly all the food himself, leaving the birds hungry and furious.</p><p>On the way home, the birds each took back their feather — and Ijapa fell from the sky, cracking his beautiful smooth shell on the rocks below.</p><p>That is why, to this day, the tortoise has a cracked, patchy shell. And the lesson? Cleverness used only for yourself always ends the same way. 🐢</p>`},
+  {title:"Emeka Fixes NEPA",emoji:"💡",sub:"When the light goes, one boy finds a way",body:`<p>In the Emeka household, the running joke was that NEPA — the power company — was the sixth member of the family, always arriving at the worst possible moment and leaving without warning.</p><p>Eleven-year-old Emeka had an important exam to revise for, but the light had gone out three times already that evening. The generator was out of fuel, and the nearest filling station was a thirty-minute walk away.</p><p>Emeka took a deep breath. He found three candles and set them up at the kitchen table so his mother could see. He moved his sisters to the room with the best moonlight and made a game of studying by the window. Then he got his own textbook, sat by the biggest candle, and revised steadily until his father came home with a full fuel can.</p><p>When the lights flooded back, his mother looked at him. "You kept this house calm tonight," she said quietly.</p><p>Emeka shrugged. "We cannot fix NEPA, Mama. But we can fix how we react to it." 💡</p>`},
+  {title:"The Benin Bronze",emoji:"🏺",sub:"A royal treasure and its young guardian",body:`<p>In the ancient city of Benin, twelve-year-old Osaro spent every Saturday at his grandfather's workshop. Grandfather was one of the last master bronze casters in the city — a keeper of a craft that was over six hundred years old.</p><p>Osaro had always known that the greatest Benin bronzes had been taken by British soldiers in 1897. Many sat in museums in London, far from the land that created them.</p><p>"Does it make you angry, Grandfather?" Osaro asked one day.</p><p>Grandfather was quiet for a while. Then he said, "What makes me more determined than angry is this: they took the objects but they could not take the knowledge. It lives here." He pressed his hand to his chest. "And soon, here." He pointed at Osaro.</p><p>"Teach me everything," Osaro said. Grandfather smiled. "I already started the day you were born." 🏺</p>`},
+  {title:"The Fisherman's Daughter",emoji:"🌊",sub:"Sade's courage on the Lagos lagoon",body:`<p>Sade's father was the best fisherman on the Lagos lagoon. But one morning, Papa's knee swelled up badly and he could not get into the canoe. The family had no other income. The rent was due.</p><p>"I will go," said eleven-year-old Sade. "The lagoon does not know if I am a girl or a boy," she replied calmly to her uncle. "It only knows if I can paddle." Her father had taught her quietly and thoroughly for three years.</p><p>Sade went out at dawn. The lagoon was silver and still. She knew where her father's nets were. She worked methodically, the way he had taught her — without rushing, without panic.</p><p>She came back at noon with a full catch. Her uncle did not say a word. But the next morning, he helped her carry the canoe to the water. 🌊</p>`},
+  {title:"Bisi and the Butterfly Farm",emoji:"🦋",sub:"How a small idea became something beautiful",body:`<p>Bisi had always loved butterflies. In the overgrown garden behind her family's house in Ekiti, she would spend hours watching them hover over the flowers.</p><p>At school, Bisi learned that butterflies were important pollinators and that their populations were declining because of pesticides. She had an idea. She convinced her mother to plant a small patch of native Nigerian wildflowers in the back garden. Then she asked her school if she could start a butterfly garden on the school grounds.</p><p>It took two planting seasons. But by the end, the school garden was buzzing with colour, the science teacher was using it for lessons, and three other schools in the local government area had asked Bisi to help them start their own.</p><p>"You started something big from something small," her science teacher told her. Bisi smiled. "That is what butterflies do too." 🦋</p>`},
+  {title:"The School Under the Mango Tree",emoji:"🏫",sub:"No building, no problem — just learning",body:`<p>When the rains damaged the roof of the only primary school in Idanre, the local government promised repairs. They promised in January. They promised again in March. By June, children were still sitting in classrooms with buckets catching drips.</p><p>Ten-year-old Tobi had an idea. There was a giant mango tree in the centre of the school compound. "We can learn out here," he told his teacher, Mr. Okonkwo. "The tree is our roof."</p><p>They moved the class outside. Parents brought extra benches. One father built a simple blackboard stand. Something unexpected happened — children from the neighbourhood who had dropped out started coming to sit under the mango tree too.</p><p>On the last day of term, Mr. Okonkwo held class under the mango tree one final time. "Never forget: learning does not need a building. It only needs willing minds." 🏫</p>`},
+  {title:"Ada the Young Scientist",emoji:"🧪",sub:"She turned cassava into something amazing",body:`<p>Ada was twelve years old and lived in Enugu, and she was convinced that cassava was the most underappreciated food in all of Nigeria. She had read online that cassava starch could be used to make biodegradable plastic — plastic that breaks down naturally instead of polluting the environment.</p><p>She decided to try it herself, in her mother's kitchen, with supervision. The first three attempts produced a sticky, useless paste. By the seventh attempt, Ada had something that bent without breaking and dissolved in water after a few days.</p><p>She brought her project to her school's science fair. She did not win first place that year — she won second. But the teacher who came first asked Ada to collaborate with him on an improved version the following year.</p><p>"You did not need a laboratory," her mother said proudly. "You needed a problem and a curious mind." 🧪</p>`},
+  {title:"The Boy Who Painted Lagos",emoji:"🎨",sub:"Colours that told the story of a city",body:`<p>Kolade was eleven and he saw Lagos differently from everyone else. While other people complained about the traffic on the Third Mainland Bridge, Kolade saw the way the car lights reflected on the lagoon at night like floating stars. He painted everything — on paper, on cardboard, on the wall of his uncle's compound with permission.</p><p>"Your paintings are too loud," a visiting art teacher once told him. "Real art is subtle."</p><p>Kolade considered this for a week. Then he replied, "With respect, sir, Lagos is not subtle. And I am painting Lagos."</p><p>When Kolade was thirteen, a gallery in Victoria Island held a competition for young artists. Kolade submitted a large painting of Oshodi market — chaotic, colourful, full of life. It won. The gallery owner wrote beneath it: "This is the truest portrait of our city I have ever seen." 🎨</p>`},
+  {title:"Elephant and the Pride of Yankari",emoji:"🐘",sub:"A wildlife adventure in Bauchi State",body:`<p>Deep in Yankari Game Reserve in Bauchi State, there lived a herd of savanna elephants that the rangers called the Yankari Pride. Twelve-year-old Hassan lived in a village near the reserve. His father was a park ranger.</p><p>One dry-season afternoon, Hassan noticed that the eldest female elephant — Mama Rock — was standing apart from the herd, moving her weight from foot to foot in distress. Something was wrong with her front leg.</p><p>He ran to find his father. The reserve vet was called. It took two days of careful work to remove a wire snare that a poacher had left near the water source. Mama Rock stood still through most of it, as if she understood that the humans were trying to help.</p><p>On the third morning, she rejoined her herd. "You saved her," his father said. "We all did," said Hassan. "That is what the reserve is for." 🐘</p>`},
+  {title:"The Last Princess of Zaria",emoji:"👑",sub:"Queen Amina's descendant finds her courage",body:`<p>In the ancient walls of Zaria, there are stories of Queen Amina, the warrior queen who expanded the Zazzau kingdom and built walls around every city she conquered. Even today, the earthen walls she built are called Amina's walls.</p><p>Twelve-year-old Fatima had grown up hearing about Queen Amina. But she did not feel like a queen's descendant. She was quiet and afraid to speak in class even when she knew the answer.</p><p>"Amina was not born fearless," her grandmother told her. "She became fearless by doing frightening things anyway."</p><p>Fatima's school was holding a debate competition. She signed up. On the day, her voice shook for the first thirty seconds. Then she thought of Amina and something steadied inside her.</p><p>She did not win the debate. But she finished it. Her grandmother was waiting outside. "How was it?" "Frightening," said Fatima. "I will do it again next term." 👑</p>`},
+];
+
+// Build story list
+const storyList = document.getElementById('story-list');
+stories.forEach((s, i) => {
+  const row = document.createElement('div');
+  row.className = 'story-row';
+  row.innerHTML = `<div class="story-emoji">${s.emoji}</div><div class="story-info"><h3>${s.title}</h3><p>${s.sub}</p></div>`;
+  row.onclick = () => openStory(i);
+  storyList.appendChild(row);
+});
+function openStory(i) {
+  document.getElementById('story-list').style.display = 'none';
+  const r = document.getElementById('story-reader');
+  r.classList.add('active');
+  document.getElementById('story-title').textContent = stories[i].emoji + ' ' + stories[i].title;
+  document.getElementById('story-body').innerHTML = stories[i].body;
+  addStars(2);
+}
+function closeStory() {
+  document.getElementById('story-list').style.display = 'flex';
+  document.getElementById('story-reader').classList.remove('active');
+}
+
+// ══════════════════════════════════════
+// PHONICS
+// ══════════════════════════════════════
+const phonicsData = [
+  {l:'A',sound:'ay',words:['Apple','Ant','Arrow']},{l:'B',sound:'buh',words:['Ball','Bear','Boat']},
+  {l:'C',sound:'kuh',words:['Cat','Cup','Cake']},{l:'D',sound:'duh',words:['Dog','Duck','Door']},
+  {l:'E',sound:'eh',words:['Egg','Elf','Elbow']},{l:'F',sound:'fuh',words:['Fish','Frog','Fan']},
+  {l:'G',sound:'guh',words:['Goat','Grape','Girl']},{l:'H',sound:'huh',words:['Hat','Horse','House']},
+  {l:'I',sound:'ih',words:['Igloo','Insect','Ink']},{l:'J',sound:'juh',words:['Jar','Juice','Jump']},
+  {l:'K',sound:'kuh',words:['Kite','King','Key']},{l:'L',sound:'luh',words:['Lion','Lamp','Leaf']},
+  {l:'M',sound:'muh',words:['Moon','Mango','Map']},{l:'N',sound:'nuh',words:['Nest','Night','Nose']},
+  {l:'O',sound:'oh',words:['Orange','Owl','Ocean']},{l:'P',sound:'puh',words:['Pen','Pig','Pizza']},
+  {l:'Q',sound:'kwuh',words:['Queen','Quiet','Quiz']},{l:'R',sound:'ruh',words:['Rain','River','Rose']},
+  {l:'S',sound:'sss',words:['Sun','Star','Snake']},{l:'T',sound:'tuh',words:['Tree','Tiger','Tent']},
+  {l:'U',sound:'uh',words:['Umbrella','Under','Up']},{l:'V',sound:'vuh',words:['Van','Vine','Voice']},
+  {l:'W',sound:'wuh',words:['Water','Wind','Wolf']},{l:'X',sound:'ks',words:['Xylophone','X-ray','Fox']},
+  {l:'Y',sound:'yuh',words:['Yak','Yellow','Yarn']},{l:'Z',sound:'zzz',words:['Zebra','Zero','Zoo']},
+];
+const pgrid = document.getElementById('phonics-grid');
+phonicsData.forEach((p,i) => {
+  const c = document.createElement('div'); c.className = 'letter-card';
+  c.innerHTML = `<div class="letter-big">${p.l}</div><div class="letter-word">${p.words[0]}</div>`;
+  c.onclick = () => {
+    document.querySelectorAll('.letter-card').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    const d = document.getElementById('phonics-detail'); d.classList.add('active');
+    document.getElementById('ph-letter').textContent = p.l + p.l.toLowerCase();
+    document.getElementById('ph-sound').textContent = 'Sound: "' + p.sound + '"';
+    document.getElementById('ph-words').innerHTML = p.words.map(w => `<span class="ph-pill">📝 ${w}</span>`).join('');
+    addStars(1);
+  };
+  pgrid.appendChild(c);
+});
+
+// ══════════════════════════════════════
+// MATHS
+// ══════════════════════════════════════
+let mathLevel = 'easy', mathScore = 0, mathQnum = 0, mathAnswer = 0, mathAnswered = false;
+function setMathLevel(l, btn) {
+  mathLevel = l; mathScore = 0; mathQnum = 0;
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('math-score').textContent = 0;
+  loadMath();
+}
+function genMath() {
+  let a,b,op,q,ans;
+  if (mathLevel==='easy') { a=Math.floor(Math.random()*10)+1; b=Math.floor(Math.random()*10)+1; op=Math.random()>0.5?'+':'-'; if(op==='-'&&b>a)[a,b]=[b,a]; ans=op==='+'?a+b:a-b; q=`${a} ${op} ${b} = ?`; }
+  else if (mathLevel==='medium') { a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; op=Math.random()>0.5?'×':'÷'; if(op==='÷'){ans=a;q=`${a*b} ÷ ${b} = ?`;}else{ans=a*b;q=`${a} × ${b} = ?`;} }
+  else { a=Math.floor(Math.random()*12)+2; b=Math.floor(Math.random()*12)+2; const ops=['+','-','×']; op=ops[Math.floor(Math.random()*ops.length)]; if(op==='+'){ans=a+b;}else if(op==='-'){if(b>a)[a,b]=[b,a];ans=a-b;}else{ans=a*b;} q=`${a} ${op} ${b} = ?`; }
+  return {q,ans};
+}
+function loadMath() {
+  mathAnswered = false;
+  const {q,ans} = genMath(); mathAnswer = ans;
+  document.getElementById('math-q').textContent = q;
+  document.getElementById('math-fb').textContent = '';
+  document.getElementById('math-next').style.display = 'none';
+  const opts = new Set([ans]);
+  while(opts.size<4){const w=ans+(Math.floor(Math.random()*10)-5);if(w!==ans&&w>=0)opts.add(w);}
+  const arr=[...opts].sort(()=>Math.random()-0.5);
+  const c=document.getElementById('math-opts'); c.innerHTML='';
+  arr.forEach(o=>{const btn=document.createElement('button');btn.className='math-opt';btn.textContent=o;btn.onclick=()=>checkMath(o,btn);c.appendChild(btn);});
+}
+function checkMath(val,btn) {
+  if(mathAnswered)return; mathAnswered=true;
+  const fb=document.getElementById('math-fb');
+  if(val===mathAnswer){btn.classList.add('correct');fb.textContent='✅ Correct!';fb.style.color='var(--green)';mathScore++;document.getElementById('math-score').textContent=mathScore;addStars(2);}
+  else{btn.classList.add('wrong');fb.textContent='❌ Answer was '+mathAnswer;fb.style.color='var(--wrong)';document.querySelectorAll('.math-opt').forEach(b=>{if(parseInt(b.textContent)===mathAnswer)b.classList.add('correct');});}
+  mathQnum++; document.getElementById('math-qnum').textContent=Math.min(mathQnum+1,10);
+  document.getElementById('math-next').style.display='inline-block';
+}
+function nextMath(){if(mathQnum>=10){mathQnum=0;mathScore=0;document.getElementById('math-score').textContent=0;document.getElementById('math-qnum').textContent=1;}loadMath();}
+loadMath();
+
+// ══════════════════════════════════════
+// GK QUIZ
+// ══════════════════════════════════════
+const gkData = {
+  animals:[
+    {q:"What is the largest animal on Earth?",opts:["Elephant","Blue Whale","Giraffe","Great White Shark"],a:1},
+    {q:"How many legs does a spider have?",opts:["6","4","8","10"],a:2},
+    {q:"Which animal is known as the 'King of the Jungle'?",opts:["Tiger","Cheetah","Lion","Leopard"],a:2},
+    {q:"What do you call a baby kangaroo?",opts:["Pup","Joey","Cub","Foal"],a:1},
+    {q:"Which bird cannot fly?",opts:["Eagle","Parrot","Penguin","Sparrow"],a:2},
+    {q:"What is the fastest land animal?",opts:["Horse","Cheetah","Greyhound","Ostrich"],a:1},
+    {q:"How many hearts does an octopus have?",opts:["1","2","3","4"],a:2},
+    {q:"Which animal has the longest neck?",opts:["Camel","Ostrich","Giraffe","Flamingo"],a:2},
+  ],
+  science:[
+    {q:"What planet is closest to the Sun?",opts:["Venus","Earth","Mercury","Mars"],a:2},
+    {q:"What gas do plants use to make food?",opts:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"],a:2},
+    {q:"How many planets are in our Solar System?",opts:["7","8","9","10"],a:1},
+    {q:"Which planet is known as the Red Planet?",opts:["Jupiter","Saturn","Venus","Mars"],a:3},
+    {q:"What force keeps us on the ground?",opts:["Magnetism","Gravity","Friction","Electricity"],a:1},
+    {q:"What is H₂O better known as?",opts:["Salt","Sugar","Water","Oxygen"],a:2},
+    {q:"What is the powerhouse of the cell?",opts:["Nucleus","Ribosome","Mitochondria","Cell Wall"],a:2},
+    {q:"What is the centre of an atom called?",opts:["Electron","Proton","Nucleus","Neutron"],a:2},
+  ],
+  history:[
+    {q:"Who was the first person to walk on the Moon?",opts:["Buzz Aldrin","Yuri Gagarin","Neil Armstrong","John Glenn"],a:2},
+    {q:"In which country were the first Olympic Games held?",opts:["Italy","Egypt","Greece","Rome"],a:2},
+    {q:"What ship sank in 1912?",opts:["Lusitania","Titanic","Bismarck","Britannic"],a:1},
+    {q:"Who invented the telephone?",opts:["Thomas Edison","Alexander Graham Bell","Nikola Tesla","James Watt"],a:1},
+    {q:"What year did World War II end?",opts:["1943","1944","1945","1946"],a:2},
+    {q:"Who wrote Romeo and Juliet?",opts:["Charles Dickens","William Shakespeare","Jane Austen","Homer"],a:1},
+    {q:"Which empire built the Colosseum?",opts:["Greek","Egyptian","Roman","Ottoman"],a:2},
+    {q:"Which ancient wonder was in Egypt?",opts:["Colosseum","Great Wall","Great Pyramid","Parthenon"],a:2},
+  ],
+  world:[
+    {q:"What is the capital city of Nigeria?",opts:["Lagos","Kano","Abuja","Ibadan"],a:2},
+    {q:"Which is the longest river in the world?",opts:["Amazon","Congo","Nile","Yangtze"],a:2},
+    {q:"On which continent is Brazil?",opts:["Africa","North America","South America","Asia"],a:2},
+    {q:"What is the capital city of France?",opts:["Berlin","Madrid","London","Paris"],a:3},
+    {q:"Which is the smallest country in the world?",opts:["Monaco","Liechtenstein","Vatican City","San Marino"],a:2},
+    {q:"How many continents are there?",opts:["5","6","7","8"],a:2},
+    {q:"Which country has the most people?",opts:["USA","India","China","Russia"],a:1},
+    {q:"What is the largest ocean?",opts:["Atlantic","Indian","Arctic","Pacific"],a:3},
+  ]
+};
+let gkQ=[],gkIdx=0,gkScore=0,gkAnswered=false;
+function startGK(topic) {
+  gkQ=[...gkData[topic]].sort(()=>Math.random()-0.5);
+  gkIdx=0;gkScore=0;gkAnswered=false;
+  document.getElementById('topic-grid').style.display='none';
+  const box=document.getElementById('gk-box');box.classList.add('active');
+  document.getElementById('gk-result').classList.remove('active');
+  document.getElementById('gk-topic-lbl').textContent={animals:'🐾 Animals',science:'🔬 Science',history:'🏛️ History',world:'🌍 World'}[topic];
+  loadGKQ();
+}
+function loadGKQ() {
+  gkAnswered=false;
+  const q=gkQ[gkIdx];
+  document.getElementById('gk-qnum').textContent=gkIdx+1;
+  document.getElementById('gk-prog').style.width=((gkIdx/8)*100)+'%';
+  document.getElementById('gk-q').textContent=q.q;
+  const opts=document.getElementById('gk-opts');opts.innerHTML='';
+  const L=['A','B','C','D'];
+  q.opts.forEach((o,i)=>{const btn=document.createElement('button');btn.className='gk-opt';btn.innerHTML=`<span class="opt-letter">${L[i]}</span>${o}`;btn.onclick=()=>checkGK(i,btn,q.a);opts.appendChild(btn);});
+}
+function checkGK(idx,btn,correct) {
+  if(gkAnswered)return;gkAnswered=true;
+  if(idx===correct){btn.classList.add('correct');gkScore++;addStars(3);}
+  else{btn.classList.add('wrong');document.querySelectorAll('.gk-opt')[correct].classList.add('correct');}
+  setTimeout(()=>{gkIdx++;if(gkIdx<8)loadGKQ();else showGKResult();},1100);
+}
+function showGKResult() {
+  document.getElementById('gk-opts').innerHTML='';document.getElementById('gk-q').textContent='';
+  document.getElementById('gk-prog').style.width='100%';
+  const r=document.getElementById('gk-result');r.classList.add('active');
+  document.getElementById('gk-score').textContent=gkScore+' / 8';
+  const p=gkScore/8;
+  let e,m;
+  if(p===1){e='🏆';m='Perfect! You are a genius!';}
+  else if(p>=0.75){e='🌟';m='Excellent! Almost perfect!';}
+  else if(p>=0.5){e='👍';m='Good job! Keep practising!';}
+  else{e='💪';m='Don\'t give up — try again!';}
+  document.getElementById('gk-emoji').textContent=e;
+  document.getElementById('gk-msg').textContent=m;
+}
+function resetGK(){document.getElementById('gk-box').classList.remove('active');document.getElementById('topic-grid').style.display='grid';}
+
+// ══════════════════════════════════════
+// EXAM PREP
+// ══════════════════════════════════════
+const QB = {
+  english:[
+    {q:"In the sentence 'The committee have reached their decision', the subject is ___.",opts:["committee","have","their","decision"],a:0,exp:"'Committee' is a collective noun and the subject of the sentence."},
+    {q:"Choose the option nearest in meaning to GARRULOUS.",opts:["Talkative","Generous","Greedy","Gloomy"],a:0,exp:"Garrulous means excessively talkative. Synonyms include loquacious and verbose."},
+    {q:"Identify the figure of speech: 'The classroom was a zoo today.'",opts:["Simile","Metaphor","Personification","Hyperbole"],a:1,exp:"This is a metaphor — a direct comparison without using 'like' or 'as'."},
+    {q:"Choose the grammatically correct sentence.",opts:["Neither the boys nor the girl are present","Neither the boys nor the girl is present","Neither the boys nor the girl were present","Neither the boys nor the girl been present"],a:1,exp:"With 'neither...nor', the verb agrees with the nearest noun. 'Girl' is singular so we use 'is'."},
+    {q:"The word EPHEMERAL means ___.",opts:["Lasting forever","Short-lived","Very large","Deeply spiritual"],a:1,exp:"Ephemeral means lasting for a very short time, from Greek 'ephemeros' meaning 'lasting a day'."},
+    {q:"Identify the clause type: 'When the rain stopped, we continued the match.'",opts:["Noun clause","Relative clause","Adverbial clause","Adjectival clause"],a:2,exp:"'When the rain stopped' modifies the verb 'continued' — this is an adverbial clause of time."},
+    {q:"'Emeka was told to FACE THE MUSIC.' This idiom means ___.",opts:["Listen to loud music","Accept the consequences","Run away from trouble","Celebrate his failure"],a:1,exp:"'Face the music' means to accept the unpleasant consequences of one's actions."},
+    {q:"The passive form of 'The teacher taught the students' is ___.",opts:["The students were taught by the teacher","The students have been taught by the teacher","The students are being taught by the teacher","The students had been taught by the teacher"],a:0,exp:"Simple past active becomes 'were taught' in the simple past passive."},
+    {q:"Select the word with the correct spelling.",opts:["Accomodation","Accommodation","Acomodation","Accommudation"],a:1,exp:"'Accommodation' has double 'c' and double 'm'. A very common exam spelling question."},
+    {q:"Choose the antonym of MAGNANIMOUS.",opts:["Generous","Petty","Courageous","Noble"],a:1,exp:"Magnanimous means very generous or forgiving. Its antonym is petty — mean-spirited."},
+  ],
+  mathematics:[
+    {q:"If 3x + 7 = 22, find x.",opts:["3","5","6","7"],a:1,exp:"3x = 22 − 7 = 15. Therefore x = 15 ÷ 3 = 5."},
+    {q:"Find the simple interest on ₦5,000 at 8% per annum for 3 years.",opts:["₦1,000","₦1,200","₦1,500","₦2,000"],a:1,exp:"SI = PRT/100 = (5000 × 8 × 3)/100 = ₦1,200."},
+    {q:"What is the sum of the interior angles of a hexagon?",opts:["540°","620°","720°","840°"],a:2,exp:"Sum = (n−2) × 180° = (6−2) × 180° = 720°."},
+    {q:"Evaluate log₁₀ 1000.",opts:["2","3","4","10"],a:1,exp:"log₁₀ 1000 = log₁₀ 10³ = 3."},
+    {q:"If a = 3 and b = −2, find 2a² − 3b.",opts:["12","24","18","30"],a:1,exp:"2(9) − 3(−2) = 18 + 6 = 24."},
+    {q:"Factorise: x² − 5x + 6.",opts:["(x−2)(x−3)","(x+2)(x+3)","(x−1)(x−6)","(x−2)(x+3)"],a:0,exp:"Two numbers that multiply to +6 and add to −5 are −2 and −3. So (x−2)(x−3)."},
+    {q:"What is 15% of 240?",opts:["30","36","42","48"],a:1,exp:"15% of 240 = 0.15 × 240 = 36."},
+    {q:"A triangle has sides 3cm, 4cm, 5cm. What type is it?",opts:["Equilateral","Isosceles","Right-angled","Obtuse"],a:2,exp:"3² + 4² = 9 + 16 = 25 = 5². Since a² + b² = c², it is right-angled."},
+    {q:"Simplify: (2³ × 2⁴) ÷ 2⁵",opts:["2²","2⁴","2⁶","2¹²"],a:0,exp:"2³ × 2⁴ = 2⁷. Then 2⁷ ÷ 2⁵ = 2²."},
+    {q:"The mean of five numbers is 12. Four are 10, 14, 11, 13. Find the fifth.",opts:["10","11","12","13"],a:2,exp:"Sum = 12×5 = 60. Four sum = 48. Fifth = 60−48 = 12."},
+  ],
+  physics:[
+    {q:"Which is NOT a vector quantity?",opts:["Velocity","Displacement","Speed","Force"],a:2,exp:"Speed is a scalar — magnitude only. Velocity has magnitude AND direction."},
+    {q:"The unit of electric resistance is ___.",opts:["Ampere","Volt","Ohm","Watt"],a:2,exp:"Resistance is measured in Ohms (Ω), named after Georg Simon Ohm."},
+    {q:"At the highest point of a vertical throw, velocity is ___.",opts:["Maximum","Minimum but not zero","Zero","Constant"],a:2,exp:"At the peak the object momentarily stops — velocity = 0."},
+    {q:"Which wave cannot travel through vacuum?",opts:["Radio waves","Light waves","Sound waves","X-rays"],a:2,exp:"Sound waves are mechanical — they need a medium. Light travels through vacuum."},
+    {q:"The formula for kinetic energy is ___.",opts:["KE = mgh","KE = ½mv²","KE = mv","KE = F×d"],a:1,exp:"KE = ½mv² where m = mass (kg) and v = velocity (m/s)."},
+    {q:"What is the SI unit of power?",opts:["Joule","Newton","Watt","Pascal"],a:2,exp:"Power is measured in Watts. 1 Watt = 1 Joule per second."},
+    {q:"White light splitting through a prism is called ___.",opts:["Reflection","Refraction","Dispersion","Diffraction"],a:2,exp:"Dispersion: different wavelengths refract at different angles, splitting white light into a spectrum."},
+    {q:"A 5kg body moves at 10m/s. Find its momentum.",opts:["2 kgm/s","15 kgm/s","50 kgm/s","500 kgm/s"],a:2,exp:"Momentum p = mv = 5 × 10 = 50 kgm/s."},
+    {q:"Ohm's Law states ___.",opts:["V = IR","V = I/R","I = V²R","R = IV"],a:0,exp:"V = IR. Voltage = Current × Resistance (at constant temperature)."},
+    {q:"Heat transfer through vacuum is called ___.",opts:["Conduction","Convection","Radiation","Absorption"],a:2,exp:"Radiation travels as electromagnetic waves and needs no medium — how the Sun's heat reaches Earth."},
+  ],
+  chemistry:[
+    {q:"The atomic number of Carbon is ___.",opts:["6","12","14","8"],a:0,exp:"Carbon has 6 protons, giving atomic number 6. Mass number is 12."},
+    {q:"Gas produced when zinc reacts with HCl?",opts:["Oxygen","Carbon dioxide","Hydrogen","Chlorine"],a:2,exp:"Zn + 2HCl → ZnCl₂ + H₂↑. Hydrogen burns with a squeaky pop."},
+    {q:"Chemical formula for water?",opts:["HO","H₂O","H₂O₂","OH"],a:1,exp:"Water is H₂O. H₂O₂ is hydrogen peroxide."},
+    {q:"Bond formed by electron transfer?",opts:["Covalent bond","Metallic bond","Ionic bond","Hydrogen bond"],a:2,exp:"Ionic bonds form when one atom transfers electrons to another. E.g. Na⁺Cl⁻."},
+    {q:"pH of a neutral solution?",opts:["0","7","10","14"],a:1,exp:"pH 7 is neutral. Below 7 = acidic. Above 7 = alkaline."},
+    {q:"Example of a noble gas?",opts:["Nitrogen","Oxygen","Argon","Fluorine"],a:2,exp:"Noble gases (Group 18): He, Ne, Ar, Kr, Xe, Rn. Full outer shells — largely unreactive."},
+    {q:"Rust forms when iron reacts with ___.",opts:["Oxygen only","Water only","Oxygen and water","CO₂ and water"],a:2,exp:"Rusting requires both oxygen and water."},
+    {q:"Converting liquid to vapour by heating is ___.",opts:["Condensation","Evaporation","Sublimation","Filtration"],a:1,exp:"Evaporation = liquid to gas. Sublimation = solid to gas. Condensation = gas to liquid."},
+    {q:"Which is NOT a property of metals?",opts:["Good electrical conductors","Malleable","Brittle","Lustrous"],a:2,exp:"Brittleness is a property of non-metals and ceramics. Metals are typically ductile and malleable."},
+    {q:"Chemical symbol for Gold?",opts:["Go","Gd","Ag","Au"],a:3,exp:"Au comes from Latin 'Aurum'. Silver = Ag (Argentum). Iron = Fe (Ferrum)."},
+  ],
+  biology:[
+    {q:"The powerhouse of the cell is the ___.",opts:["Nucleus","Ribosome","Mitochondria","Chloroplast"],a:2,exp:"Mitochondria produce ATP through cellular respiration."},
+    {q:"Universal blood donor group?",opts:["A","B","AB","O"],a:3,exp:"O negative has no A, B, or Rh antigens — universal donor. AB positive = universal recipient."},
+    {q:"Photosynthesis takes place in the ___.",opts:["Mitochondria","Chloroplast","Nucleus","Vacuole"],a:1,exp:"Chloroplasts contain chlorophyll. Light reactions in thylakoids; Calvin cycle in stroma."},
+    {q:"Scientific name for humans?",opts:["Homo erectus","Homo habilis","Homo sapiens","Homo neanderthal"],a:2,exp:"Homo sapiens means 'wise man' in Latin."},
+    {q:"Which brain part controls breathing and heartbeat?",opts:["Cerebrum","Cerebellum","Medulla oblongata","Hypothalamus"],a:2,exp:"The medulla oblongata controls breathing, heart rate and blood pressure automatically."},
+    {q:"Osmosis is movement of ___.",opts:["Solute high to low","Water low to high water potential","Water high to low water potential","Solute low to high"],a:2,exp:"Osmosis: water moves from high water potential (dilute) to low water potential (concentrated) through a semi-permeable membrane."},
+    {q:"DNA stands for ___.",opts:["Deoxyribose Nucleic Acid","Deoxyribonucleic Acid","Deoxyribose Nitrogen Acid","Deoxyribose Nucleotide Acid"],a:1,exp:"DNA = Deoxyribonucleic Acid. Bases: Adenine, Thymine, Guanine, Cytosine."},
+    {q:"Vitamin produced by skin in sunlight?",opts:["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],a:3,exp:"UV rays convert 7-dehydrocholesterol to Vitamin D3. Deficiency causes rickets."},
+    {q:"The process of producing offspring is ___.",opts:["Respiration","Nutrition","Reproduction","Excretion"],a:2,exp:"Reproduction is one of the seven life processes: MRSGREN."},
+    {q:"Malaria is caused by ___.",opts:["A virus","A bacterium","A fungus","A protozoan"],a:3,exp:"Malaria is caused by Plasmodium (protozoan), transmitted by the female Anopheles mosquito."},
+  ],
+  economics:[
+    {q:"Law of Demand: as price rises, quantity demanded ___.",opts:["Rises","Falls","Stays the same","Doubles"],a:1,exp:"Inverse relationship between price and quantity demanded (ceteris paribus)."},
+    {q:"Which is NOT a factor of production?",opts:["Land","Labour","Capital","Money"],a:3,exp:"Factors of production: Land, Labour, Capital, Entrepreneurship. Money is not one."},
+    {q:"Inflation means ___.",opts:["A fall in money value","A rise in general price level","An increase in employment","A decrease in production"],a:1,exp:"Inflation = sustained rise in the general price level, reducing purchasing power."},
+    {q:"A market with only one seller is ___.",opts:["Oligopoly","Duopoly","Monopoly","Monopsony"],a:2,exp:"Monopoly = one seller. Oligopoly = few. Duopoly = two. Monopsony = one buyer."},
+    {q:"GDP stands for ___.",opts:["Gross Domestic Product","Gross Demand Price","General Domestic Production","Gross Development Plan"],a:0,exp:"GDP = total monetary value of all goods and services produced within a country."},
+    {q:"Example of a public good?",opts:["A bottle of Coke","A cinema ticket","Street lighting","A bag of rice"],a:2,exp:"Public goods are non-excludable and non-rival — street lighting benefits everyone."},
+    {q:"Elasticity of demand measures ___.",opts:["Change in supply when price changes","Responsiveness of qty demanded to price change","Rate of inflation","Level of income"],a:1,exp:"PED = % change in Qty Demanded ÷ % change in Price."},
+    {q:"Opportunity cost is ___.",opts:["Cost of one more unit","Value of best alternative forgone","Total cost of a decision","Cost of raw materials"],a:1,exp:"Opportunity cost = value of the next-best alternative you give up when making a choice."},
+    {q:"Which institution manages monetary policy in Nigeria?",opts:["Federal Ministry of Finance","Central Bank of Nigeria","Nigerian Stock Exchange","EFCC"],a:1,exp:"The CBN controls money supply, interest rates and inflation in Nigeria."},
+    {q:"Budget deficit occurs when government ___.",opts:["Spends less than it earns","Earns more than it spends","Spends more than it earns","Balances income and expenditure"],a:2,exp:"Deficit = government expenditure > revenue, financed through borrowing."},
+  ],
+  literature:[
+    {q:"In 'Things Fall Apart', the protagonist is ___.",opts:["Obierika","Nwoye","Okonkwo","Mr Brown"],a:2,exp:"Okonkwo is the tragic hero — a proud Igbo warrior whose fear of failure drives his destruction."},
+    {q:"'The wind whispered through the trees.' This is ___.",opts:["Simile","Personification","Metaphor","Alliteration"],a:1,exp:"Personification gives human qualities to non-human things."},
+    {q:"A soliloquy is a speech made ___.",opts:["To another character","To the audience","When alone on stage","During a battle"],a:2,exp:"A soliloquy is when a character speaks thoughts aloud while alone on stage."},
+    {q:"Theme of 'The Lion and the Jewel' by Soyinka?",opts:["Pure love story","Tradition vs modernity","War and violence","Colonial oppression only"],a:1,exp:"Soyinka's play explores tension between African tradition (Baroka) and Western modernity (Lakunle)."},
+    {q:"A story ending unhappily with the hero's death is a ___.",opts:["Comedy","Tragedy","Epic","Satire"],a:1,exp:"Tragedy follows a hero who falls from greatness due to a fatal flaw (hamartia)."},
+    {q:"Repetition of consonant sounds at start of words is ___.",opts:["Assonance","Onomatopoeia","Alliteration","Rhyme"],a:2,exp:"Alliteration e.g. 'Peter Piper picked'. Assonance = vowel repetition."},
+    {q:"'No Longer at Ease' was written by ___.",opts:["Wole Soyinka","Cyprian Ekwensi","Chinua Achebe","Ama Ata Aidoo"],a:2,exp:"Chinua Achebe wrote it in 1960, following Okonkwo's grandson Obi in colonial Lagos."},
+    {q:"An autobiography is a book ___.",opts:["Written by another about a person","By a person about their own life","A fictional story","Only about history"],a:1,exp:"Auto = self. Autobiography = self-written life story. Biography = written by someone else."},
+  ],
+  government:[
+    {q:"Nigeria gained independence in ___.",opts:["1957","1960","1963","1966"],a:1,exp:"Nigeria became independent on October 1, 1960. It became a republic on October 1, 1963."},
+    {q:"The three arms of government are ___.",opts:["Executive, Legislative, Judiciary","President, Senate, Governor","Federal, State, Local","Army, Police, Courts"],a:0,exp:"Executive implements laws. Legislature makes laws. Judiciary interprets laws."},
+    {q:"Federalism means ___.",opts:["One central government","Power shared between central and regional govts","Military controls government","One party controls all"],a:1,exp:"Federal system: sovereignty shared between national and state governments."},
+    {q:"INEC is responsible for ___.",opts:["Tax collection","Conducting elections","Managing the army","Making laws"],a:1,exp:"INEC organises and supervises federal and state elections in Nigeria."},
+    {q:"A constitution is ___.",opts:["A set of unwritten customs","The supreme law of a country","A military decree","A presidential speech"],a:1,exp:"A constitution is the fundamental law establishing government structure and citizens' rights."},
+    {q:"Separation of powers was developed by ___.",opts:["John Locke","Karl Marx","Montesquieu","Rousseau"],a:2,exp:"Montesquieu argued for separate legislative, executive and judicial branches in 'The Spirit of the Laws' (1748)."},
+    {q:"Local government is at which tier in Nigeria?",opts:["First tier","Second tier","Third tier","Fourth tier"],a:2,exp:"Nigeria has three tiers: Federal (1st), State (2nd), Local Government (3rd). There are 774 LGAs."},
+    {q:"The Nigerian Senate has how many members?",opts:["109","120","360","469"],a:0,exp:"109 senators: 3 per state (36 × 3 = 108) + 1 for FCT."},
+  ],
+  geography:[
+    {q:"The River Niger flows into the ___.",opts:["Atlantic Ocean","Indian Ocean","Mediterranean Sea","Gulf of Guinea"],a:3,exp:"The Niger flows through Mali, Niger and Nigeria into the Gulf of Guinea via the Niger Delta."},
+    {q:"Wind depositing fine sand particles is called ___.",opts:["Erosion","Corrasion","Deposition","Weathering"],a:2,exp:"Deposition: wind loses energy and drops its sediment, forming dunes and loess plains."},
+    {q:"Lagos is situated on ___.",opts:["River bank","Plateau","Lagoon coast","Savanna plain"],a:2,exp:"Lagos is built on islands and mainland along the Atlantic coast, separated by a lagoon."},
+    {q:"The Jos Plateau is in which state?",opts:["Kaduna","Benue","Plateau","Niger"],a:2,exp:"The Jos Plateau rises to 1,200–1,400m in Plateau State. Cooler climate, rich in tin."},
+    {q:"The line dividing Earth into N and S hemispheres?",opts:["Tropic of Cancer","Prime Meridian","Equator","International Date Line"],a:2,exp:"The Equator at 0° latitude is equidistant from both poles."},
+    {q:"The harmattan blows from ___.",opts:["The Atlantic Ocean","The Sahara Desert","The Gulf of Guinea","The Mediterranean Sea"],a:1,exp:"Harmattan: dry dusty wind from the Sahara across West Africa, November to March."},
+    {q:"Crude oil in Nigeria is mainly found in ___.",opts:["North Central","Lake Chad Basin","Niger Delta","Jos Plateau"],a:2,exp:"The Niger Delta (Rivers, Bayelsa, Delta, Akwa Ibom) holds Nigeria's petroleum reserves."},
+    {q:"The largest lake in Nigeria is ___.",opts:["Lake Kainji","Lake Chad","Lake Alau","Lake Oguta"],a:1,exp:"Lake Chad borders Nigeria, Niger, Chad and Cameroon. Kainji is man-made from the Kainji Dam."},
+  ],
+};
+
+const EXAM_CFG = {
+  waec:{label:'WAEC',subjects:['english','mathematics','physics','chemistry','biology','economics','literature','government','geography']},
+  neco:{label:'NECO',subjects:['english','mathematics','physics','chemistry','biology','economics','geography']},
+  jamb:{label:'JAMB',subjects:['english','mathematics','physics','chemistry','biology','economics','literature','government','geography']},
+  utme:{label:'Post UTME',subjects:['english','mathematics','physics','chemistry','biology','economics','government']},
+};
+const SUBJ_META = {
+  english:   {name:'English Language',icon:'📝'},
+  mathematics:{name:'Mathematics',    icon:'🔢'},
+  physics:   {name:'Physics',         icon:'⚛️'},
+  chemistry: {name:'Chemistry',       icon:'🧪'},
+  biology:   {name:'Biology',         icon:'🧬'},
+  economics: {name:'Economics',       icon:'📊'},
+  literature:{name:'Literature',      icon:'📖'},
+  government:{name:'Government',      icon:'🏛️'},
+  geography: {name:'Geography',       icon:'🌍'},
+};
+
+let eExam='',eSubject='',eMode='',eQuestions=[],eIdx=0,eCorrect=0,eWrong=0,eAnswered=false,eTimer=null,eTimeLeft=40,eLog=[];
+let eStats=JSON.parse(localStorage.getItem('bm_estats')||'{"total":0,"avgScore":0,"sessions":0}');
+updateEStats();
+
+function updateEStats(){
+  document.getElementById('stat-total').textContent=eStats.total;
+  document.getElementById('stat-avg').textContent=eStats.sessions>0?eStats.avgScore+'%':'—';
+  document.getElementById('stat-sess').textContent=eStats.sessions;
+}
+
+function showES(id){
+  document.querySelectorAll('.escreen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pickExam(exam){
+  eExam=exam;
+  const cfg=EXAM_CFG[exam];
+  document.getElementById('es-exam-title').textContent=cfg.label+' — Choose Subject';
+  const list=document.getElementById('es-subject-list'); list.innerHTML='';
+  cfg.subjects.forEach(s=>{
+    const m=SUBJ_META[s];
+    const row=document.createElement('div'); row.className='subject-row-exam';
+    row.innerHTML=`<div class="sre-left"><div class="sre-icon">${m.icon}</div><div><div class="sre-name">${m.name}</div><div class="sre-count">${QB[s].length} questions</div></div></div><span style="color:var(--muted)">›</span>`;
+    row.onclick=()=>pickSubject(s,m.name);
+    list.appendChild(row);
+  });
+  showES('es-subject');
+}
+
+function pickSubject(id,name){
+  eSubject=id;
+  document.getElementById('es-subj-title').textContent=name;
+  showES('es-mode');
+}
+
+function startExamSession(mode){
+  eMode=mode; eIdx=0; eCorrect=0; eWrong=0; eLog=[];
+  const pool=[...QB[eSubject]].sort(()=>Math.random()-0.5);
+  eQuestions=mode==='marathon'?pool:pool.slice(0,10);
+  showES('es-quiz'); loadEQ();
+}
+
+function loadEQ(){
+  eAnswered=false; clearInterval(eTimer);
+  const q=eQuestions[eIdx];
+  const total=eMode==='marathon'?'∞':eQuestions.length;
+  document.getElementById('eq-meta').textContent=EXAM_CFG[eExam].label+' · '+SUBJ_META[eSubject].name;
+  document.getElementById('eq-qnum').textContent='Question '+(eIdx+1)+' of '+total;
+  document.getElementById('eq-qtext').textContent=q.q;
+  document.getElementById('eq-prog').style.width=eMode==='marathon'?'50%':((eIdx/eQuestions.length)*100)+'%';
+  const opts=document.getElementById('eq-opts'); opts.innerHTML='';
+  const L=['A','B','C','D'];
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button'); btn.className='eq-opt';
+    btn.innerHTML=`<span class="opt-letter">${L[i]}</span>${o}`;
+    btn.onclick=()=>checkEQ(i,btn);
+    opts.appendChild(btn);
+  });
+  const expBox=document.getElementById('eq-exp'); expBox.className='exp-box'; expBox.innerHTML='';
+  document.getElementById('eq-next').style.display='none';
+  document.getElementById('eq-skip').style.display=eMode==='practice'?'none':'inline-block';
+  const timerEl=document.getElementById('eq-timer');
+  if(eMode==='timed'){
+    timerEl.style.display='block'; eTimeLeft=40;
+    timerEl.textContent='0:40'; timerEl.classList.remove('urgent');
+    eTimer=setInterval(()=>{
+      eTimeLeft--;
+      timerEl.textContent='0:'+(eTimeLeft<10?'0':'')+eTimeLeft;
+      if(eTimeLeft<=10)timerEl.classList.add('urgent');
+      if(eTimeLeft<=0){clearInterval(eTimer);eAutoSkip();}
+    },1000);
+  } else { timerEl.style.display='none'; }
+}
+
+function checkEQ(idx,btn){
+  if(eAnswered)return; eAnswered=true; clearInterval(eTimer);
+  const q=eQuestions[eIdx];
+  document.querySelectorAll('.eq-opt').forEach(b=>b.disabled=true);
+  const isCorrect=idx===q.a;
+  if(isCorrect){btn.classList.add('correct');eCorrect++; addStars(3);}
+  else{btn.classList.add('wrong');document.querySelectorAll('.eq-opt')[q.a].classList.add('correct');eWrong++;}
+  eLog.push({q:q.q,opts:q.opts,chosen:idx,correct:q.a,exp:q.exp});
+  const expBox=document.getElementById('eq-exp');
+  expBox.innerHTML=`<strong>💡 Explanation:</strong> ${q.exp}`;
+  expBox.classList.add('show');
+  document.getElementById('eq-skip').style.display='none';
+  if(eMode==='marathon'&&!isCorrect){setTimeout(()=>showEResults(),1000);return;}
+  document.getElementById('eq-next').style.display='inline-block';
+}
+
+function eAutoSkip(){
+  eAnswered=true;
+  const q=eQuestions[eIdx];
+  document.querySelectorAll('.eq-opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.eq-opt')[q.a].classList.add('correct');
+  eLog.push({q:q.q,opts:q.opts,chosen:-1,correct:q.a,exp:q.exp}); eWrong++;
+  document.getElementById('eq-skip').style.display='none';
+  document.getElementById('eq-next').style.display='inline-block';
+  const expBox=document.getElementById('eq-exp');
+  expBox.innerHTML=`<strong>⏰ Time's up!</strong> ${q.exp}`; expBox.classList.add('show');
+}
+
+function examSkip(){
+  if(eAnswered)return; clearInterval(eTimer);
+  const q=eQuestions[eIdx];
+  eLog.push({q:q.q,opts:q.opts,chosen:-1,correct:q.a,exp:q.exp}); eWrong++;
+  eIdx++; if(eIdx>=eQuestions.length){showEResults();return;} loadEQ();
+}
+
+function examNext(){
+  eIdx++; if(eIdx>=eQuestions.length){showEResults();return;} loadEQ();
+}
+
+function showEResults(){
+  clearInterval(eTimer);
+  const total=eLog.length;
+  const pct=total>0?Math.round((eCorrect/total)*100):0;
+  eStats.total+=total;
+  eStats.avgScore=Math.round((eStats.avgScore*eStats.sessions+pct)/(eStats.sessions+1));
+  eStats.sessions++;
+  localStorage.setItem('bm_estats',JSON.stringify(eStats));
+  updateEStats();
+  let lbl,col;
+  if(pct>=80){lbl='Excellent! Keep it up! 🏆';col='var(--correct)';}
+  else if(pct>=65){lbl='Good performance! Nearly there. 👍';col='var(--neco)';}
+  else if(pct>=50){lbl='Pass — but more practice needed. 📚';col='var(--jamb)';}
+  else{lbl='Below pass mark. Review and try again! 💪';col='var(--wrong)';}
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-pct').style.color=col;
+  document.getElementById('res-lbl').textContent=lbl;
+  document.getElementById('res-correct').textContent=eCorrect;
+  document.getElementById('res-wrong').textContent=eWrong;
+  document.getElementById('res-score').textContent=pct+'%';
+  const rl=document.getElementById('res-review'); rl.innerHTML='';
+  eLog.forEach((a,i)=>{
+    const wc=a.chosen===a.correct;
+    const div=document.createElement('div'); div.className='review-item '+(wc?'rc':'rw');
+    const ch=a.chosen===-1?'Skipped':a.opts[a.chosen];
+    div.innerHTML=`<div class="rev-q">${i+1}. ${a.q}</div><div class="rev-a">${wc?`<span class="c-text">✓ ${a.opts[a.correct]}</span>`:`<span class="w-text">✗ ${ch}</span> → <span class="c-text">✓ ${a.opts[a.correct]}</span>`}<br><span style="color:var(--muted);font-size:0.8rem">💡 ${a.exp}</span></div>`;
+    rl.appendChild(div);
+  });
+  showES('es-results');
+}
+
+function retrySession(){startExamSession(eMode);}
+
+// ══════════════════════════════════════
+// PWA
+// ══════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault(); deferredPrompt=e;
+  document.getElementById('install-btn').style.display='flex';
+});
+document.getElementById('install-btn').addEventListener('click',async()=>{
+  if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('install-btn').style.display='none';}
+});
+</script>
+</body>
+</html>
