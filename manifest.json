@@ -1,21 +1,22 @@
 {
-  "name": "BrightMind Kids",
+  "name": "BrightMind NG",
   "short_name": "BrightMind",
-  "description": "Nigerian stories, phonics, maths and quizzes for kids aged 8–12",
-  "start_url": "./index.html",
+  "description": "Nigerian kids learning app with stories, phonics, maths, quizzes and exam prep",
+  "start_url": "/BrightMind-app/",
+  "scope": "/BrightMind-app/",
   "display": "standalone",
-  "background_color": "#fef9f0",
-  "theme_color": "#667eea",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/BrightMind-app/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/BrightMind-app/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
